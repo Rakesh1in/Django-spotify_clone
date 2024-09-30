@@ -1,0 +1,87 @@
+<!-- playlist.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlists</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #161D6F;
+            color: #ffffff;
+        }
+        .playlist-card {
+            background-color: #0B2F9F;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .track-item {
+            background-color:#98DED9;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .btn-play {
+            background-color: #C7FFD8;
+            color: #2d1a5e;
+        }
+        .btn-play:hover {
+            background-color: #374594;
+            color: #ffffff;
+        }
+    </style>
+    
+    <script>
+        function playTrack(trackId) {
+            fetch(`/play/${trackId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(`Playing track on your Spotify device: ${trackId}`);
+                }
+            });
+        }
+    </script>
+    
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Your Spotify Playlists</h1>
+
+        <!-- Playlist Loop -->
+        <div class="row">
+            {% for playlist in playlists %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="playlist-card">
+                        <h4>{{ playlist.name }}</h4>
+                        <p>{{ playlist.tracks.total }} Tracks</p>
+
+                        <!-- Track Loop -->
+                        <ul class="list-group">
+                            {% for track in playlist.tracks.items %}
+                                <li class="list-group-item track-item d-flex justify-content-between align-items-center">
+                                    <span>{{ track.track.name }} by {{ track.track.artists.0.name }}</span>
+                                    <button class="btn btn-play" onclick="playTrack('{{ track.track.id }}')">
+                                        Play
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional, for responsive components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
